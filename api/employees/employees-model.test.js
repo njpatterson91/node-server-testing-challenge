@@ -34,12 +34,6 @@ afterAll(async () => {
   await db.destroy();
 });
 
-describe("Sanity Check", () => {
-  it("is we sane", () => {
-    expect(2 + 2).toBe(4);
-  });
-});
-
 describe("Checking Employees Model", () => {
   it("Employees.getAll returns empty array if no employees exist", async () => {
     const results = await Employees.getAll();
@@ -55,5 +49,19 @@ describe("Checking Employees Model", () => {
     const results = await Employees.update(1, employee1Updated);
     expect(results).toHaveProperty("id", 1);
     expect(results).toMatchObject(employee1Updated);
+  });
+  it("Checking delete helper function", async () => {
+    await db("employees").insert(employee1);
+    const results = await Employees.remove(1);
+    expect(results).toBe(1);
+  });
+  it("Checking getById helper function", async () => {
+    await db("employees").insert(employee1);
+    const results = await Employees.getById(1);
+    expect(results).toMatchObject(employee1);
+  });
+  it("Forcing getById failure", async () => {
+    const results = await Employees.getById(1);
+    expect(results).toBe(undefined);
   });
 });
